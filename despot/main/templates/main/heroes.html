@@ -1,0 +1,190 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'media.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Prosto+One&display=swap" rel="stylesheet">
+    <title>Д Е С П О Т</title>
+</head>
+<body>
+    <main>
+        <div class="main_left">
+            <div class="logo">
+                <a href="{% url 'index' %}"><img src="{% static 'img/logo.png' %}"></a>
+                <a>Деспот</a>
+            </div>
+
+            <div class="nav">
+                <a href="{% url 'reviews' %}">Все отзывы</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'new_review' %}">Оставить отзыв...</a>
+                {% else %}
+                    <a href="{% url 'auth' %}">Оставить отзыв...</a>
+                {% endif %}
+                <a href="{% url 'heroes' %}">Досье</a>
+                <a href="{% url 'search' %}">Поиск и розыск</a>
+
+                {% if user.is_authenticated %}
+                    <span>Вы вошли как: {{ user.username }}</span>
+                    <a href="{% url 'logout' %}">Выйти</a>
+                {% endif %}
+            </div>            
+            
+            <div class="advertisement">
+                <a href="https://drugvokrug.ru"><img src="{% static 'img/advert.gif' %}"></a>
+            </div>
+        </div>
+
+        <div class="main_center">
+            <div class="red_block font-2">
+                <a>Досье героя</a>
+            </div>
+            
+            <div class="heroes_container">
+                <!-- Сообщение по умолчанию -->
+                <div id="noHeroSelected" class="blue_block no-hero-selected" {% if selected_hero %}style="display: none;"{% endif %}>
+                    <div class="select-hero-message">
+                        <a class="font-125 mon">Выберите героя справа, чтобы посмотреть его досье</a>
+                    </div>
+                </div>
+                
+                <!-- Карточка героя -->
+                <div id="heroCard" class="hero_card blue_block" {% if not selected_hero %}style="display: none;"{% endif %}>
+                    <div class="hero_card_up">
+                        <div class="hero_basic_info">                            
+                            <div class="hero_right_title">
+                                <a>Герой</a>
+                            </div>
+                            <div id="heroPhotoContainer" class="hero_photo_container">
+                                {% if selected_hero and selected_hero.photo %}
+                                    <img src="{{ selected_hero.photo.url }}" alt="{{ selected_hero.first_name }} {{ selected_hero.last_name }}" class="hero_photo">
+                                {% else %}
+                                    <div class="no_photo">Нет фото</div>
+                                {% endif %}
+                            </div>
+                            <div class="hero_info_row">Имя: <span id="heroFirstName">{% if selected_hero %}{{ selected_hero.first_name }}{% endif %}</span></div>
+                            <div class="hero_info_row">Фамилия: <span id="heroLastName">{% if selected_hero %}{{ selected_hero.last_name }}{% endif %}</span></div>
+                            <div class="hero_info_row">Прозвище: <span id="heroAka">{% if selected_hero %}{{ selected_hero.aka }}{% endif %}</span></div>
+                        </div>
+                    </div>
+                    <div class="hero_card_down">
+                        <div class="hero_card_right">
+                            <div class="hero_right_title">
+                                <a>Ключевые детали</a>
+                            </div>
+                            <div class="hero_detail_row">
+                                <span class="detail_label">Раса:</span>
+                                <span id="heroRace">{% if selected_hero %}{{ selected_hero.race }}{% endif %}</span>
+                            </div>
+                            <div class="hero_detail_row">
+                                <span class="detail_label">Пол:</span>
+                                <span id="heroGender">{% if selected_hero %}{{ selected_hero.get_gender_display }}{% endif %}</span>
+                            </div>
+                            <div class="hero_detail_row">
+                                <span class="detail_label">Возраст:</span>
+                                <span id="heroAge">{% if selected_hero and selected_hero.age %}{{ selected_hero.age }}{% else %}не указан{% endif %}</span>
+                            </div>
+                            <div class="hero_detail_row">
+                                <span class="detail_label">Рост:</span>
+                                <span id="heroHeight">{% if selected_hero and selected_hero.height %}{{ selected_hero.height }} см{% else %}не указан{% endif %}</span>
+                            </div>
+                            <div class="hero_detail_row">
+                                <span class="detail_label">Место рождения:</span>
+                                <span id="heroBirthPlace">{% if selected_hero %}{{ selected_hero.birth_place }}{% endif %}</span>
+                            </div>
+                            <div class="hero_detail_row">
+                                <span class="detail_label">Номер телефона:</span>
+                                <span id="heroPhone">{% if selected_hero %}{{ selected_hero.phone }}{% endif %}</span>
+                            </div>
+                            
+                            <div class="hero_right_title">
+                                <a>Рабочая информация</a>
+                            </div>
+                            <div class="hero_detail_row">
+                                <span class="detail_label">Биография</span>
+                                <div id="heroBiography" class="hero_biography">{% if selected_hero %}{{ selected_hero.biography|linebreaks }}{% endif %}</div>
+                            </div>
+                            <div class="hero_detail_row">
+                                <span class="detail_label">Нарушение</span>
+                                <div id="heroConvicted" class="hero_convicted">{% if selected_hero and selected_hero.convicted_for %}{{ selected_hero.convicted_for|linebreaks }}{% else %}нет информации{% endif %}</div>
+                            </div>
+                            <div class="hero_detail_row">
+                                <span class="detail_label">Статус:</span>
+                                <span id="heroStatus" class="{% if selected_hero and selected_hero.is_active %}status-active{% else %}status-retired{% endif %}">
+                                    {% if selected_hero %}
+                                        {% if selected_hero.is_active %}действующий герой{% else %}в отставке{% endif %}
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main_right">
+            <div class="main_right_name font-2">
+                <a>Действующие герои</a>
+            </div>
+            
+            <div class="rightpanel_block">
+                {% for hero in active_heroes %}
+                <div class="rightpanel_item hero-select-item {% if selected_hero and selected_hero.id == hero.id %}selected{% endif %}" 
+                     data-hero-id="{{ hero.id }}">
+                    <div class="active_hero_info">
+                        <div class="active_hero_name mon font-125">
+                            {{ hero.first_name }} <b>«{{ hero.aka }}»</b> {{ hero.last_name }}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no_active_heroes">
+                    <span class="mon">Нет действующих героев</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="main_right_name font-2">
+                <a>Герои в отставке</a>
+            </div>
+
+            <div class="rightpanel_block">
+                {% for hero in retired_heroes %}
+                <div class="rightpanel_item hero-select-item {% if selected_hero and selected_hero.id == hero.id %}selected{% endif %}" 
+                     data-hero-id="{{ hero.id }}">
+                    <div class="retired_hero_info">
+                        <div class="retired_hero_name mon font-125">
+                            {{ hero.first_name }} <b>«{{ hero.aka }}»</b> {{ hero.last_name }}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no_retired_heroes">
+                    <span class="mon">Нет героев в отставке</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'scripts.js' %}"></script>
+    <script>
+        // Сброс URL при загрузке страницы (убираем параметр hero_id из адресной строки)
+        window.addEventListener('load', function() {
+            // Если в URL есть параметр hero_id, очищаем его без перезагрузки
+            if (window.location.search.includes('hero_id=')) {
+                const url = new URL(window.location);
+                url.searchParams.delete('hero_id');
+                window.history.replaceState({}, '', url);
+            }
+        });
+    </script>
+</body>
+</html>

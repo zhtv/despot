@@ -1,0 +1,192 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'media.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Prosto+One&display=swap" rel="stylesheet">
+    <title>Д Е С П О Т</title>
+</head>
+<body>
+    <main>
+        <div class="main_left">
+            <div class="logo">
+                <a href="{% url 'index' %}"><img src="{% static 'img/logo.png' %}"></a>
+                <a>Деспот</a>
+            </div>
+
+            <div class="nav">
+                <a href="{% url 'reviews' %}">Все отзывы</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'new_review' %}">Оставить отзыв...</a>
+                {% else %}
+                    <a href="{% url 'auth' %}">Оставить отзыв...</a>
+                {% endif %}
+                <a href="{% url 'heroes' %}">Досье</a>
+                <a href="{% url 'search' %}">Поиск и розыск</a>
+
+                {% if user.is_authenticated %}
+                    <span>Вы вошли как: {{ user.username }}</span>
+                    <a href="{% url 'logout' %}">Выйти</a>
+                {% endif %}
+            </div>            
+            
+            <div class="advertisement">
+                <a href="https://vk.com/video-200368061_456240222"><img src="{% static 'img/tescha.gif' %}"></a>
+            </div>
+        </div>
+
+        <div class="main_center">
+            <div class="red_block font-2">
+                <a>Все отзывы</a>
+            </div>
+            
+            <div class="reviews_container">
+                {% for review in reviews %}
+                <div class="review_wrapper">
+                    <div class="{% cycle 'red_block' 'blue_block' %} review_block" 
+                        data-id="{{ review.id }}"
+                        data-name="{{ review.name }}"
+                        data-date="{{ review.created_at|date:'d.m.Y H:i' }}"
+                        data-overall-rating="{{ review.overall_rating }}"
+
+                        data-hero1-name="{{ review.hero1.aka|escapejs }}"
+                        data-hero1-rating="{{ review.hero1_rating }}"
+                        
+                        data-hero2-name="{{ review.hero2.aka|escapejs }}"
+                        data-hero2-rating="{{ review.hero2_rating }}"
+                        
+                        data-hero3-name="{{ review.hero3.aka|escapejs }}"
+                        data-hero3-rating="{{ review.hero3_rating }}"
+                        
+                        data-hero4-name="{{ review.hero4.aka|escapejs }}"
+                        data-hero4-rating="{{ review.hero4_rating }}"
+                        
+                        data-hero5-name="{{ review.hero5.aka|escapejs }}"
+                        data-hero5-rating="{{ review.hero5_rating }}"
+                        
+                        data-text="{{ review.text|escapejs }}"
+                        data-photo-url="{% if review.photo %}{{ review.photo.url }}{% endif %}">
+                        
+                        <div class="review_left">
+                            <div class="review_left_left">
+                                <div class="review_header">
+                                    <span class="review_name font-175">{{ review.name }}</span>
+                                    <span class="review_date mon">
+                                        {{ review.created_at|date:"d.m.Y H:i" }}
+                                    </span>
+                                </div>
+                                
+                                <div class="review_rating">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= review.overall_rating %}
+                                            <span class="star font-175">★</span>
+                                        {% else %}
+                                            <span class="star font-175 empty-star">☆</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            {% if review.photo %}
+                            <div class="review_left_right">
+                                <img src="{{ review.photo.url }}" alt="Фото отзыва" class="review_photo">
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="review_right">                            
+                            <div class="review_text font-1 mon">
+                                <a>{{ review.text|truncatechars:350 }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no_reviews blue_block">
+                    <a>Пока нет отзывов.</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="main_right">
+            <div class="main_right_name font-2">
+                <a>Рейтинги</a>
+            </div>
+            
+            <div class="rightpanel_block">
+                <!-- Блок "Всего отзывов" - ссылка на страницу отзывов -->
+                <a href="{% url 'reviews' %}" class="clickable-block-link">
+                    <div class="rightpanel_item clickable-block">
+                        <span class="rating_label font-125"><b>Всего отзывов:</b></span>
+                        <span class="rating_value font-175">{{ reviews_count }}</span>
+                    </div>
+                </a>
+                
+                <!-- Блок "Общий рейтинг" - ссылка на страницу героев -->
+                <a href="{% url 'heroes' %}" class="clickable-block-link">
+                    <div class="rightpanel_item clickable-block">
+                        <span class="rating_label font-125"><b>Общий рейтинг:</b></span>
+                        <span class="rating_value font-15">
+                            {{ avg_overall_rating }}
+                            <span class="star_small font-15">★</span>
+                        </span>
+                    </div>
+                </a>
+                
+                <!-- Блоки героев - ссылки на страницу героев с открытием конкретного героя -->
+                {% for stat in hero_stats %}
+                {% if stat.hero %}
+                <a href="{% url 'heroes' %}?hero_id={{ stat.hero.id }}" class="clickable-block-link">
+                    <div class="rightpanel_item clickable-block hero-link" data-hero-id="{{ stat.hero.id }}">
+                        <span class="rating_label font-125">
+                            {% if stat.hero.aka %}
+                                {{ stat.hero.aka }}:
+                            {% else %}
+                                {{ stat.hero.first_name }}:
+                            {% endif %}
+                        </span>
+                        <span class="rating_value font-15">
+                            {{ stat.avg_rating }}
+                            <span class="star_small font-15">★</span>
+                            <span class="rating_count mon">({{ stat.count }})</span>
+                        </span>
+                    </div>
+                </a>
+                {% else %}
+                <div class="rightpanel_item">
+                    <span class="rating_label font-125">
+                        Рейтинг героя {{ stat.position }}:
+                    </span>
+                    <span class="rating_value font-15">
+                        {{ stat.avg_rating }}
+                        <span class="star_small font-15">★</span>
+                        <span class="rating_count mon">({{ stat.count }})</span>
+                    </span>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Модальное окно для отображения полной информации об отзыве -->
+        <div id="reviewModal" class="modal-overlay">
+            <div class="modal-content">
+                <span class="modal-close">&times;</span>
+                <div class="modal-review-info">
+                    <!-- Здесь будет динамически загружаться информация -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'scripts.js' %}"></script>
+</body>
+</html>

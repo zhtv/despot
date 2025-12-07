@@ -1,0 +1,112 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'media.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Prosto+One&display=swap" rel="stylesheet">
+    <title>Д Е С П О Т</title>
+</head>
+<body>
+    <main>
+        <div class="main_left">
+            <div class="logo">
+                <a href="{% url 'index' %}"><img src="{% static 'img/logo.png' %}"></a>
+                <a>Деспот</a>
+            </div>
+
+            <div class="nav">
+                <a href="{% url 'reviews' %}">Все отзывы</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'new_review' %}">Оставить отзыв...</a>
+                {% else %}
+                    <a href="{% url 'auth' %}">Оставить отзыв...</a>
+                {% endif %}
+                <a href="{% url 'heroes' %}">Досье</a>
+                <a href="{% url 'search' %}">Поиск и розыск</a>
+
+                {% if user.is_authenticated %}
+                    <span>Вы вошли как: {{ user.username }}</span>
+                    <a href="{% url 'logout' %}">Выйти</a>
+                {% endif %}
+            </div>            
+            
+            <div class="advertisement">
+                <img src="{% static 'img/advert.gif' %}">
+            </div>
+        </div>
+
+        <div class="main_center_auth">
+            <div class="red_block font-2">
+                <a>Авторизуйтесь справа, чтобы оставить отзыв!</a>
+            </div>
+            <div class="auth_info">
+                <div class="auth_info_block red_block mon font-125">
+                    <a>В целях безопасности и исключения подделки отзывов, для получения логина и пароля необходимо <b>подать соответствующее 
+                        заявление</b>. Сделать это можно в любом отделении Деспота по предварительной записи.</a><br><br>
+                    <a>Все заявления рассматриваются в течение <b>трёх рабочих дней</b>.</a>
+                </div>
+                <div class="auth_info_block blue_block mon font-125">
+                    <a>Если вы вызываете помощь, то после первого вызова и проверки логин и пароль придут <b>на СМС по номеру, с 
+                        которого совершался вызов, в течение часа</b>.</a><br><br>
+                    <a>Пожалуйста, не пытайтесь пробраться в систему, если вы являетесь участником программы «Деспот». <b>В случае нарушения
+                        информация будет передана диспетчеру</b>.
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="main_right">
+            <div class="main_right_name font-2">
+                <a>Авторизация</a>
+            </div>
+            
+            <div class="auth_form">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form_group mon font-15">
+                        <label for="username">Логин:</label>
+                        <input type="text" 
+                            name="username" 
+                            id="username" 
+                            class="form-control font-1 mon"
+                            placeholder="Введите логин" 
+                            required>
+                        {% if error_username %}
+                            <div class="auth_error mon font-1">
+                                {{ error_username }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form_group mon font-15">
+                        <label for="password">Пароль:</label>
+                        <input type="password" 
+                            name="password" 
+                            id="password" 
+                            class="form-control font-1 mon"
+                            placeholder="Введите пароль" 
+                            required>
+                        {% if error_password %}
+                            <div class="auth_error mon font-1">
+                                {{ error_password }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <button type="submit" class="red_button font-15">Войти</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    
+
+</body>
+</html>

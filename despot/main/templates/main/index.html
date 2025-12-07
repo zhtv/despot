@@ -1,0 +1,122 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'media.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Prosto+One&display=swap" rel="stylesheet">
+    <title>Д Е С П О Т</title>
+</head>
+<body>
+    <main>
+        <div class="main_left">
+            <div class="logo">
+                <a href="{% url 'index' %}"><img src="{% static 'img/logo.png' %}"></a>
+                <a>Деспот</a>
+            </div>
+
+            <div class="nav">
+                <a href="{% url 'reviews' %}">Все отзывы</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'new_review' %}">Оставить отзыв...</a>
+                {% else %}
+                    <a href="{% url 'auth' %}">Оставить отзыв...</a>
+                {% endif %}
+                <a href="{% url 'heroes' %}">Досье</a>
+                <a href="{% url 'search' %}">Поиск и розыск</a>
+
+                {% if user.is_authenticated %}
+                    <span>Вы вошли как: {{ user.username }}</span>
+                    <a href="{% url 'logout' %}">Выйти</a>
+                {% endif %}
+            </div>            
+            
+            <div class="advertisement">
+                <a href="https://drugvokrug.ru"><img src="{% static 'img/advert.gif' %}"></a>
+            </div>
+        </div>
+
+        <div class="main_center">
+            <div class="base">
+                <div class="hello red_block font-2">
+                    <a>Добро пожаловать в Деспот!</a>
+                </div>
+                <div class="state blue_block font-125">
+                    <a>Вы находитесь в штате: Анжеро</a>
+                </div>
+            </div>
+
+            <div class="info">
+                <div class="info_text_blocks">
+                    <div class="info_text red_block mon font-125">
+                        <a>Упали с лестницы? Заметили подозрительного человека в торговом центре? 
+                            Ваша кошка залезла на дерево? Не беда!</a>
+                    </div>
+                    <div class="info_text red_block mon font-125">
+                        <a>Свяжитесь с отделом <b>Деспота</b>, и вам на помощь придут квалифицированные герои!</a>
+                    </div>
+                    <div class="info_text red_block mon font-125">
+                        <a><b>Экстренные номера:</b></a><br>
+                        <a>242 <b>/</b> 646</a><br><br>
+                        <a><b>Отдел качества:</b></a><br>
+                        <a>+7(921)124-67-68 <b>/</b> +7(913)808-56-12</a>
+                    </div>
+                </div>
+                
+                <div class="info_image blue_block">
+                    <img src="{% static 'img/cop.jpg' %}">
+                </div>
+            </div>
+        </div>
+
+        <div class="main_right">
+            <div class="main_right_name font-2">
+                <a>Свежие отзывы</a>
+            </div>
+            
+            {% for review in recent_reviews %}
+            <a href="{% url 'reviews' %}" class="feedback-link">
+                <div class="feedback">
+                    <div class="feedback_name">
+                        <span>{{ review.name }}</span>
+                    </div>
+                    <div class="feedback_rate">
+                        <span>
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.overall_rating %}
+                                    ★
+                                {% else %}
+                                    ☆
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                    <div class="feedback_text mon font-1">
+                        <span>{{ review.text|truncatechars:75 }}</span>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="feedback">
+                <div class="feedback_name">
+                    <span>Пока нет отзывов</span>
+                </div>
+                <div class="feedback_rate">
+                    <span>☆☆☆☆☆</span>
+                </div>
+                <div class="feedback_text mon font-1">
+                    <span>Будьте первым, кто оставит отзыв!</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+    
+</body>
+</html>

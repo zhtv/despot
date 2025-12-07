@@ -1,0 +1,77 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'media.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Prosto+One&display=swap" rel="stylesheet">
+    <title>Д Е С П О Т</title>
+</head>
+<body>
+    <main>
+        <div class="main_left">
+            <div class="logo">
+                <a href="{% url 'index' %}"><img src="{% static 'img/logo.png' %}"></a>
+                <a>Деспот</a>
+            </div>
+
+            <div class="nav">
+                <a href="{% url 'reviews' %}">Все отзывы</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'new_review' %}">Оставить отзыв...</a>
+                {% else %}
+                    <a href="{% url 'auth' %}">Оставить отзыв...</a>
+                {% endif %}
+                <a href="{% url 'heroes' %}">Досье</a>
+                <a href="{% url 'search' %}">Поиск и розыск</a>
+
+                {% if user.is_authenticated %}
+                    <span>Вы вошли как: {{ user.username }}</span>
+                    <a href="{% url 'logout' %}">Выйти</a>
+                {% endif %}
+            </div>            
+            
+            <div class="advertisement">
+                <img src="{% static 'img/advert.gif' %}">
+            </div>
+        </div>
+
+        <div class="main_center">
+            <div class="red_block font-2">
+                <a>Пропавшие без вести</a>
+            </div>
+            <div class="blue_block mon font-125">
+                <a>К счастью, нет записей.</a>
+            </div>
+
+            <div class="red_block font-2">
+                <a>Разыскиваются</a>
+            </div>
+            <div class="blue_block mon font-125">
+                <a>К счастью, нет записей.</a>
+            </div>            
+        </div>
+
+        <div class="main_right">
+            <div class="main_right_name font-2">
+                <a>Внимание!</a>
+            </div>
+            <div class="search_info mon font-125">
+                <a>Если вы располагаете какой-либо информацией о людях, представленных на данной странице, пожалуйста,
+                    <b>срочно свяжитесь с диспетчерской Деспота</b> по экстренным номерам:
+                </a><br>
+                <a class="font-2">242 <b>/</b> 646</a>
+            </div>
+            </div>
+        </div>
+    </main>
+    
+
+</body>
+</html>

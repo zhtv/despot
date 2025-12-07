@@ -1,0 +1,75 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'styles2.css' %}">
+    <link rel="stylesheet" href="{% static 'media.css' %}">
+    <title>Д Е С П О Т</title>
+</head>
+<body>
+    <header>
+        <div>
+            <a>Отзывы</a>
+        </div>
+
+        <div class="logo">
+            <a href="{% url 'index' %}"><img src="{% static 'img/logo.png' %}"></a>
+        </div>
+
+        <div>
+            <a>Оставить отзыв...</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="index_left">
+            <div class="base">
+                <div class="hello">
+                    <a>Добро пожаловать в Деспот!</a>
+                </div>
+                <div class="state">
+                    <a>Выбранный штат: Анжеро</a>
+                </div>
+            </div>
+            <div class="info">
+                <div class="info_text">
+                    <a>Упали с лестницы? Заметили подозрительного человека в торговом центре? Ваша кошка залезла на дерево? Не беда!</a>
+                </div>
+                <div class="info_image">
+                    <img src="{% static 'img/cop.jpg' %}">
+                </div>
+            </div>
+        </div>
+        
+        <div class="index_right">
+            <div class="feedback">
+                <div class="feedback_name">
+                    <a>Кастор Сесикович</a>
+                </div>
+                <div class="feedback_rate">
+                    <a>★★★★★</a>
+                </div>
+                <div class="feedback_text">
+                    <a>Спасибо Деспоту, они спасли мою собаку</a>
+                </div>
+            </div>
+            
+            <div class="feedback">
+                <div class="feedback_name">
+                    <a>Сесик Касторович</a>
+                </div>
+                <div class="feedback_rate">
+                    <a>★</a>
+                </div>
+                <div class="feedback_text">
+                    <a>"Спасибо" Деспоту, они убили мою собаку</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
