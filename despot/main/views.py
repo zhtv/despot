@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.db.models import Avg, Count, Q
-from .models import Review, Hero
+from .models import Review, Hero, Person  # ← Добавьте Person в импорт
 from .forms import ReviewForm
 from django.http import JsonResponse
 
@@ -19,6 +19,9 @@ def index(request):
 
 def index2(request):
     return render(request, "main/index2.html")
+
+def adblock(request):
+    return render(request, "main/adblock.html")
 
 def auth(request):
     # Проверяем, есть ли ошибки в сессии
@@ -228,4 +231,36 @@ def get_hero_data(request, hero_id):
         return JsonResponse({'error': 'Герой не найден'}, status=404)
 
 def search(request):
-    return render(request, "main/search.html")
+    # Получаем всех людей, сгруппированных по статусу
+    persons_missing = Person.objects.filter(status='missing')
+    persons_found = Person.objects.filter(status='found')
+    persons_wanted = Person.objects.filter(status='wanted')
+    persons_caught = Person.objects.filter(status='caught')
+    
+    context = {
+        'persons_missing': persons_missing,
+        'persons_found': persons_found,
+        'persons_wanted': persons_wanted,
+        'persons_caught': persons_caught,
+    }
+    
+    return render(request, "main/search.html", context)
+
+def get_person_data(request, person_id):
+    try:
+        person = Person.objects.get(id=person_id)
+        data = {
+            'id': person.id,
+            'name': person.name,
+            'age': person.age,
+            'city': person.get_city_display(),
+            'comment': person.comment,
+            'features': person.features,
+            'clothing': person.clothing,
+            'status': person.get_status_display(),
+            'photo_url': person.photo.url if person.photo else '',
+            'created_at': person.created_at.strftime('%d.%m.%Y %H:%M'),
+        }
+        return JsonResponse(data)
+    except Person.DoesNotExist:
+        return JsonResponse({'error': 'Человек не найден'}, status=404)

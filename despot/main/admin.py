@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Review, Hero  # ← Добавляем Hero
+from .models import Review, Hero, Person
 
 @admin.register(Hero)
 class HeroAdmin(admin.ModelAdmin):
@@ -50,3 +50,9 @@ class ReviewAdmin(admin.ModelAdmin):
         if not obj.author:
             obj.author = request.user
         super().save_model(request, obj, form, change)
+
+@admin.register(Person)
+class PersonAdmin(admin.ModelAdmin):
+    list_display = ('name', 'age', 'city', 'status', 'created_at')
+    list_filter = ('status', 'city')
+    search_fields = ('name', 'comment', 'features')

@@ -52,6 +52,23 @@ main {
     padding: 1%;
 }
 
+.adblock {
+    display: flex;
+    flex-direction: column;
+    gap: 5%;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: black;
+    color: white;
+    font-size: 6rem;
+    padding: 1%;
+}
+
+.adblock span {
+    padding: 0% 20%;
+}
+
 /* ЛЕВО */
 .main_left {
     flex: 1;
@@ -531,8 +548,8 @@ input {
 
 .modal-close {
     position: absolute;
-    top: 1%;
-    right: 1%;
+    top: 1.5%;
+    right: 1.5%;
     font-size: 3rem;
     cursor: pointer;
     color: #005ebd;
@@ -554,7 +571,7 @@ input {
     margin-right: 3%;
 }
 
-.modal-review-name {
+.modal-review-name, .modal-person-name {
     font-size: 2rem;
     font-weight: bold;
 }
@@ -623,11 +640,11 @@ input {
 }
 
 .hero_card_up {
-    flex: 2;
+    flex: 3;
 }
 
 .hero_card_down {
-    flex: 3;
+    flex: 4;
 }
 
 .hero_basic_info {
@@ -640,7 +657,7 @@ input {
     width: 100%;
 }
 
-.hero_right_title {
+.hero_right_title, .detail-title {
     background-color: #005ebd;
     color: white;
     padding: 5px 0;
@@ -648,9 +665,48 @@ input {
     text-align: center;
 }
 
+.hero_name_block {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
 .hero_info_row, .detail_label {
     font-weight: bold;
     font-family: Prosto One;
+}
+
+.hero_detail_row, .hero_name_row {
+    display: flex;
+    align-items: center;
+}
+
+.hero_detail_row .detail_label {
+    min-width: 110px;
+    background-color: white;
+    padding: 5px 10px;
+    border: 5px double #005ebd;
+}
+
+.hero_name_row .detail_label {
+    min-width: 120px;
+    background-color: white;
+    padding: 5px 10px;
+    border: 5px double #005ebd;
+}
+
+.detail_value {
+    width: 100%;
+    font-family: Montserrat;
+    padding: 5px 10px;
+    background-color: #d4eaff;
+    border: 5px solid #d4eaff;
+    border-left: none;
+}
+
+.detail_value2 {
+    font-family: Montserrat;
+    text-align: justify;
 }
 
 .hero_info_row span, .hero_detail_row span:not(.detail_label), .hero_detail_row div {
@@ -679,4 +735,123 @@ input {
     border: 5px outset #8d0900;
     color: #8d0900;
     text-align: justify;
+}
+
+.search_cards {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+}
+
+/* Стили для карточек людей */
+.person-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 0.5rem;
+    cursor: pointer;
+    background-color: white;
+}
+
+.person-photo {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Стили для модального окна с информацией о человеке */
+.modal-person-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.modal-review-header, .modal-person-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 3%;
+}   
+
+.modal-person-status {
+    padding: 0.5% 1%;
+}
+
+.status-missing { background-color: #ffcc00; }
+.status-wanted { background-color: #ff3333; color: white; }
+.status-found { background-color: #00cc00; color: white; }
+.status-caught { background-color: #3333ff; color: white; }
+
+.modal-person-content {
+    display: flex;
+    gap: 15px;
+    font-size: 1.25rem;
+}
+
+.modal-person-left {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 5px;
+}
+
+.modal-person-photo {
+    width: 100%;
+}
+
+.no-photo {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+}
+
+.modal-person-details {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-person-detail {
+    display: flex;
+    align-items: center;
+}
+
+.detail-label {
+    font-weight: bold;
+    min-width: 100px;
+    background-color: white;
+    padding: 5px 10px;
+    border: 5px double #005ebd;
+}
+
+.detail-value {
+    font-family: Montserrat;
+    padding: 5px 10px;
+    width: 100%;
+    background-color: #d4eaff;
+    border: 5px solid #d4eaff;
+    border-left: none;
+}
+
+.detail-value2 {
+    font-family: Montserrat;
+    padding: 5px;
+    background-color: #d4eaff;
+    border-top: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    border: 5px double #005ebd;
+    border-top: none;
+    text-align: justify;
+}
+
+.modal-person-comment {
+    display: flex;
+    flex-direction: column;
 }

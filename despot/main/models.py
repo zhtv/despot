@@ -115,3 +115,60 @@ class Review(models.Model):
     class Meta:
         verbose_name = "Отзыв"
         verbose_name_plural = "Отзывы"
+
+# models.py (добавить после класса Review)
+class Person(models.Model):
+    STATUS_CHOICES = [
+        ('missing', 'Пропал'),
+        ('wanted', 'Розыск'),
+        ('found', 'Найден'),
+        ('caught', 'Пойман'),
+    ]
+    
+    CITY_CHOICES = [
+        ('city1', 'Вуменсфилд'),
+        ('city2', 'Девоур Сан'),
+        ('city3', 'Джымиетта'),
+        ('city4', 'Занисасаллэ'),
+        ('city5', 'Ивклитор'),
+        ('city6', 'Кант'),
+        ('city7', 'Клеверленд'),
+        ('city8', 'Ксения'),
+        ('city9', 'Марина'),
+        ('city10', 'Мидалтавн'),
+        ('city11', 'Похфимар'),
+        ('city12', 'Ротик'),
+        ('city13', 'С. Перм'),
+        ('city14', 'Садженск'),
+        ('city15', 'Симпсоны'),
+        ('city16', 'Синабоны'),
+        ('city17', 'Сыендуски'),
+        ('city18', 'Тимчиккотик'),
+        ('city19', 'Толетоле'),
+        ('city20', 'Томаш'),
+        ('city21', 'Фараон'),
+        ('city22', 'Финн'),
+        ('city23', 'Янго'),
+    ]
+    
+    # Основные поля
+    photo = models.ImageField(upload_to='person_photos/', blank=True, null=True, verbose_name="Фото")
+    name = models.CharField(max_length=100, verbose_name="Имя")
+    age = models.IntegerField(verbose_name="Возраст")
+    city = models.CharField(max_length=50, choices=CITY_CHOICES, verbose_name="Город")
+    comment = models.TextField(verbose_name="Комментарий")
+    features = models.TextField(verbose_name="Приметы", blank=True)
+    clothing = models.TextField(verbose_name="Одежда", blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, verbose_name="Статус")
+    
+    # Дополнительные поля
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+    
+    def __str__(self):
+        return f"{self.name} ({self.get_status_display()})"
+    
+    class Meta:
+        verbose_name = "Человек"
+        verbose_name_plural = "Люди"
+        ordering = ['-created_at']

@@ -1,3 +1,4 @@
+// scripts.js
 // Функция для создания звездного рейтинга с учетом "без оценки"
 function createStars(rating) {
     if (rating === 0) {
@@ -26,6 +27,85 @@ function getRatingDisplay(rating) {
 // Функция для сохранения переносов строк в тексте
 function formatTextWithLineBreaks(text) {
     return text.replace(/\n/g, '<br>');
+}
+
+// Функции для работы с модальными окнами людей
+function getStatusClass(status) {
+    const statusClasses = {
+        'Пропал': 'status-missing',
+        'Розыск': 'status-wanted',
+        'Найден': 'status-found',
+        'Пойман': 'status-caught'
+    };
+    return statusClasses[status] || '';
+}
+
+function showPersonModal(personId) {
+    fetch(`/get-person-data/${personId}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Ошибка загрузки данных');
+                return;
+            }
+            
+            console.log('Данные человека:', data); // Для отладки
+            
+            // Создаем HTML для модального окна
+            let modalHTML = `
+                <div class="modal-person-header">
+                    <span class="modal-person-name font-2">${data.name}</span>
+                </div>
+                
+                <div class="modal-person-content">
+                    <div class="modal-person-left">
+                        ${data.photo_url ? 
+                            `<img src="${data.photo_url}" alt="${data.name}" class="modal-person-photo">` : 
+                            '<div class="no-photo">Нет фото</div>'
+                        }
+                        <div class="modal-person-detail">
+                            <span class="detail-label">Возраст:</span>
+                            <span class="detail-value">${data.age}</span>
+                        </div>
+                        <div class="modal-person-detail">
+                            <span class="detail-label">Город:</span>
+                            <span class="detail-value">${data.city}</span>
+                        </div>
+                        <div class="modal-person-detail">
+                            <span class="detail-label">Статус:</span>
+                            <span class="detail-value">${data.status}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-person-details">
+                        <div class="modal-person-comment">
+                            <div class="detail-title">Одежда</div>
+                            <div class="detail-value2">${data.clothing || 'не указана'}</div>
+                        </div>
+                        <div class="modal-person-comment">
+                            <div class="detail-title">Приметы</div>
+                            <div class="detail-value2">${data.features || 'нет информации'}</div>
+                        </div>
+                        <div class="modal-person-comment">
+                            <div class="detail-title">Комментарий</div>
+                            <div class="detail-value2">${formatTextWithLineBreaks(data.comment)}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Вставляем HTML в модальное окно
+            const modalInfo = document.querySelector('.modal-person-info');
+            modalInfo.innerHTML = modalHTML;
+            
+            // Показываем модальное окно
+            const modal = document.getElementById('personModal');
+            modal.style.display = 'flex';
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+            alert('Ошибка загрузки данных');
+        });
 }
 
 // Функция для отображения полной информации об отзыве
@@ -169,10 +249,10 @@ function showHero(heroData) {
     // Статус
     if (heroData.is_active) {
         document.getElementById('heroStatus').textContent = 'действующий герой';
-        document.getElementById('heroStatus').className = 'status-active';
+        document.getElementById('heroStatus').className = 'detail_value status-active';
     } else {
         document.getElementById('heroStatus').textContent = 'в отставке';
-        document.getElementById('heroStatus').className = 'status-retired';
+        document.getElementById('heroStatus').className = 'detail_value status-retired';
     }
 
     // Фото героя
@@ -281,4 +361,40 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.querySelector('.hero-select-item')) {
         initHeroesPage();
     }
+
+    // Добавляем обработчики для карточек людей
+    document.querySelectorAll('.person-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const personId = this.getAttribute('data-person-id');
+            console.log('Нажали на карточку, ID:', personId); // Для отладки
+            showPersonModal(personId);
+        });
+    });
+    
+    // Закрытие модального окна для персон
+    const personModal = document.getElementById('personModal');
+    const personCloseBtn = personModal?.querySelector('.modal-close');
+    
+    if (personCloseBtn) {
+        personCloseBtn.addEventListener('click', function() {
+            personModal.style.display = 'none';
+        });
+    }
+    
+    if (personModal) {
+        personModal.addEventListener('click', function(event) {
+            if (event.target === personModal) {
+                personModal.style.display = 'none';
+            }
+        });
+    }
+    
+    // Закрытие по Esc
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            if (personModal && personModal.style.display === 'flex') {
+                personModal.style.display = 'none';
+            }
+        }
+    });
 });
