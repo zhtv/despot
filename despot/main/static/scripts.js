@@ -26,7 +26,7 @@ function getRatingDisplay(rating) {
 
 // Функция для сохранения переносов строк в тексте
 function formatTextWithLineBreaks(text) {
-    return text.replace(/\n/g, '<br>');
+    return text ? text.replace(/\n/g, '<br>') : '';
 }
 
 // Функции для работы с модальными окнами людей
@@ -240,35 +240,107 @@ function showHero(heroData) {
         document.getElementById('heroHeight').textContent = 'не указан';
     }
     
+    // НОВОЕ ПОЛЕ: Суперспособность (может быть null)
+    const superpowerElement = document.getElementById('heroSuperpower');
+    if (superpowerElement) {
+        if (heroData.superpower) {
+            superpowerElement.textContent = heroData.superpower;
+        } else {
+            superpowerElement.textContent = 'не указана';
+        }
+    }
+    
     document.getElementById('heroBirthPlace').textContent = heroData.birth_place;
     document.getElementById('heroPhone').textContent = heroData.phone;
-    document.getElementById('heroBiography').innerHTML = heroData.biography.replace(/\n/g, '<br>');
-    document.getElementById('heroConvicted').innerHTML = heroData.convicted_for ? 
-        heroData.convicted_for.replace(/\n/g, '<br>') : 'нет информации';
+    document.getElementById('heroBiography').innerHTML = heroData.biography ? 
+        heroData.biography.replace(/\n/g, '<br>') : '';
     
-    // Статус
-    if (heroData.is_active) {
-        document.getElementById('heroStatus').textContent = 'действующий герой';
-        document.getElementById('heroStatus').className = 'detail_value status-active';
+    // НОВОЕ ПОЛЕ: Описание суперспособности (может быть null)
+    const superpowerDescElement = document.getElementById('heroSuperpowerDescription');
+    if (superpowerDescElement) {
+        if (heroData.superpower_description) {
+            superpowerDescElement.innerHTML = heroData.superpower_description.replace(/\n/g, '<br>');
+        } else {
+            superpowerDescElement.innerHTML = '[—]';
+        }
+    }
+    
+    // Обновляем текст для полей в зависимости от статуса
+    const convictedElement = document.getElementById('heroConvicted');
+    const convictedLabel = document.getElementById('convictedLabel');
+    const biographyLabel = document.getElementById('biographyLabel');
+    
+    if (convictedElement) {
+        if (heroData.convicted_for) {
+            convictedElement.innerHTML = heroData.convicted_for.replace(/\n/g, '<br>');
+        } else {
+            if (heroData.status === 'dispatch' || heroData.status === 'staff_retired') {
+                convictedElement.innerHTML = 'нет информации об активном умении';
+            } else {
+                convictedElement.innerHTML = 'нет информации';
+            }
+        }
+    }
+    
+    // Меняем заголовки в зависимости от статуса
+    if (heroData.status === 'dispatch' || heroData.status === 'staff_retired') {
+        if (biographyLabel) biographyLabel.textContent = 'Пассивное умение:';
+        if (convictedLabel) convictedLabel.textContent = 'Активное умение:';
     } else {
-        document.getElementById('heroStatus').textContent = 'в отставке';
-        document.getElementById('heroStatus').className = 'detail_value status-retired';
+        if (biographyLabel) biographyLabel.textContent = 'Биография:';
+        if (convictedLabel) convictedLabel.textContent = 'Нарушение:';
+    }
+    
+    // Обновляем отображение статуса
+    const statusElement = document.getElementById('heroStatus');
+    if (statusElement) {
+        let statusText = '';
+        let statusClass = '';
+        
+        // Используем новый статус из heroData
+        if (heroData.status === 'active') {
+            statusText = 'действующий герой';
+            statusClass = 'detail_value status-active';
+        } else if (heroData.status === 'dispatch') {
+            statusText = 'диспетчер';
+            statusClass = 'detail_value status-dispatch';
+        } else if (heroData.status === 'staff_retired') {
+            statusText = 'персонал в отставке';
+            statusClass = 'detail_value status-staff-retired';
+        } else if (heroData.status === 'retired') {
+            statusText = 'в отставке';
+            statusClass = 'detail_value status-retired';
+        } else {
+            // Для обратной совместимости
+            if (heroData.is_active) {
+                statusText = 'действующий герой';
+                statusClass = 'detail_value status-active';
+            } else {
+                statusText = 'в отставке';
+                statusClass = 'detail_value status-retired';
+            }
+        }
+        
+        statusElement.textContent = statusText;
+        statusElement.className = statusClass;
     }
 
     // Фото героя
     const photoContainer = document.getElementById('heroPhotoContainer');
-    photoContainer.innerHTML = '';
-    if (heroData.photo_url) {
-        const img = document.createElement('img');
-        img.src = heroData.photo_url;
-        img.alt = heroData.first_name + ' ' + heroData.last_name;
-        img.className = 'hero_photo';
-        photoContainer.appendChild(img);
-    } else {
-        const noPhoto = document.createElement('div');
-        noPhoto.className = 'no_photo';
-        noPhoto.textContent = 'Нет фото';
-        photoContainer.appendChild(noPhoto);
+    if (photoContainer) {
+        photoContainer.innerHTML = '';
+        if (heroData.photo_url) {
+            const img = document.createElement('img');
+            img.src = heroData.photo_url;
+            img.alt = heroData.first_name + ' ' + heroData.last_name;
+            img.className = 'hero_photo';
+            photoContainer.appendChild(img);
+        } else {
+            const noPhoto = document.createElement('div');
+            noPhoto.className = 'no_photo';
+            noPhoto.textContent = 'Нет фото';
+            photoContainer.appendChild(noPhoto);
+        }
     }
 
     // Убираем выделение у всех и добавляем текущему

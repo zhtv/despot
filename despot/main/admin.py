@@ -3,23 +3,24 @@ from .models import Review, Hero, Person
 
 @admin.register(Hero)
 class HeroAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'aka', 'race', 'is_active', 'position')
-    list_filter = ('is_active', 'gender')
+    list_display = ('first_name', 'last_name', 'aka', 'race', 'status', 'position')
+    list_filter = ('status', 'gender')  # Добавит фильтр по новому статусу
     search_fields = ('first_name', 'last_name', 'aka', 'race')
-    list_editable = ('is_active', 'position')
+    list_editable = ('status', 'position')
     
     fieldsets = (
         ('Основная информация', {
             'fields': ('first_name', 'last_name', 'aka', 'photo')
         }),
         ('Биографические данные', {
-            'fields': ('race', 'gender', 'age', 'height', 'birth_place', 'phone')
+            'fields': ('race', 'gender', 'age', 'height', 'superpower', 'birth_place', 'phone')
         }),
         ('Дополнительная информация', {
-            'fields': ('biography', 'convicted_for')
+            'fields': ('biography', 'superpower_description', 'convicted_for')
         }),
         ('Статус', {
-            'fields': ('is_active', 'position')
+            'fields': ('status', 'position'),
+            'description': 'Позиция используется только для действующих героев. "Персонал в отставке" - бывшие диспетчеры и другой персонал.'
         }),
     )
 

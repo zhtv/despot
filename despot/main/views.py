@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.db.models import Avg, Count, Q
-from .models import Review, Hero, Person  # ← Добавьте Person в импорт
+from .models import Review, Hero, Person
 from .forms import ReviewForm
 from django.http import JsonResponse
 
@@ -29,36 +29,30 @@ def auth(request):
     error_password = request.session.pop('error_password', None)
     
     if request.method == 'GET':
-        # Просто показываем форму
         return render(request, "main/auth.html", {
             'error_username': error_username,
             'error_password': error_password
         })
     
-    # Только для POST запроса (нажатие кнопки "Войти")
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         
-        # Проверяем существование пользователя
         try:
             user_exists = User.objects.get(username=username)
         except User.DoesNotExist:
             user_exists = None
         
         if user_exists is None:
-            # Пользователь не существует - сохраняем ошибку в сессии и делаем редирект
             request.session['error_username'] = '⚠️ такого логина не существует'
             return redirect(reverse('auth'))
         else:
-            # Пользователь существует, проверяем пароль
             user = authenticate(request, username=username, password=password)
             
             if user is not None:
                 login(request, user)
                 return redirect('index')
             else:
-                # Пароль неверный - сохраняем ошибку в сессии и делаем редирект
                 request.session['error_password'] = '⚠️ неверный пароль'
                 return redirect(reverse('auth'))
 
@@ -67,33 +61,22 @@ def logout_view(request):
     return redirect('index')
 
 def reviews(request):
-    # Получаем все отзывы
     all_reviews = Review.objects.all().order_by('-created_at')
-    
-    # Статистика для правой панели
     reviews_count = all_reviews.count()
+    avg_overall_rating = all_reviews.aggregate(avg=Avg('overall_rating'))['avg'] or 0
     
-    # Средний общий рейтинг
-    avg_overall_rating = all_reviews.aggregate(
-        avg=Avg('overall_rating')
-    )['avg'] or 0
+    # Получаем действующих героев по позициям
+    active_heroes = Hero.objects.filter(status='active').order_by('position')
     
-    # Получаем активных героев по позициям
-    active_heroes = Hero.objects.filter(is_active=True).order_by('position')
-    
-    # Создаем список для хранения статистики по героям
     hero_stats_list = []
     
-    # Для каждого активного героя считаем статистику
     for hero in active_heroes:
-        # Собираем все оценки для этого героя из всех позиций
         hero1_reviews = Review.objects.filter(hero1=hero, hero1_rating__gt=0)
         hero2_reviews = Review.objects.filter(hero2=hero, hero2_rating__gt=0)
         hero3_reviews = Review.objects.filter(hero3=hero, hero3_rating__gt=0)
         hero4_reviews = Review.objects.filter(hero4=hero, hero4_rating__gt=0)
         hero5_reviews = Review.objects.filter(hero5=hero, hero5_rating__gt=0)
         
-        # Объединяем все оценки
         ratings = []
         ratings.extend([r.hero1_rating for r in hero1_reviews])
         ratings.extend([r.hero2_rating for r in hero2_reviews])
@@ -115,13 +98,10 @@ def reviews(request):
             'count': count
         })
     
-    # Сортируем по позиции
     hero_stats_list.sort(key=lambda x: x['position'])
     
-    # Создаем список из 5 элементов (даже если героев меньше)
     hero_stats = []
     for i in range(1, 6):
-        # Ищем героя с нужной позицией
         hero_stat = next((hs for hs in hero_stats_list if hs['position'] == i), None)
         if hero_stat:
             hero_stats.append(hero_stat)
@@ -137,15 +117,15 @@ def reviews(request):
         'reviews': all_reviews,
         'reviews_count': reviews_count,
         'avg_overall_rating': round(avg_overall_rating, 1),
-        'hero_stats': hero_stats,  # Список из 5 элементов
+        'hero_stats': hero_stats,
     }
     
     return render(request, "main/reviews.html", context)
 
 @login_required
 def new_review(request):
-    # Получаем активных героев для отображения в форме
-    active_heroes = Hero.objects.filter(is_active=True).order_by('position')
+    # Получаем только действующих героев (не диспетчеров) для отображения в форме
+    active_heroes = Hero.objects.filter(status='active').order_by('position')
     
     if request.method == 'POST':
         form = ReviewForm(request.POST, request.FILES)
@@ -153,7 +133,6 @@ def new_review(request):
             review = form.save(commit=False)
             review.author = request.user
             
-            # Присваиваем героев по позициям
             for i, hero in enumerate(active_heroes, 1):
                 if i == 1:
                     review.hero1 = hero
@@ -182,9 +161,19 @@ def new_review(request):
     return render(request, "main/new_review.html", context)
 
 def heroes(request):
+    # Получаем героев по категориям
     all_heroes = Hero.objects.all().order_by('last_name', 'first_name')
-    active_heroes = Hero.objects.filter(is_active=True).order_by('position')
-    retired_heroes = Hero.objects.filter(is_active=False).order_by('last_name', 'first_name')
+    active_heroes = Hero.objects.filter(status='active').order_by('position')
+    dispatch_heroes = Hero.objects.filter(status='dispatch').order_by('last_name', 'first_name')
+    
+    # Объединяем оба типа отставки для отображения в одном разделе
+    retired_heroes = Hero.objects.filter(
+        status__in=['retired', 'staff_retired']
+    ).order_by('last_name', 'first_name')
+    
+    # Разделяем для логики в шаблоне (если нужно)
+    just_retired_heroes = Hero.objects.filter(status='retired').order_by('last_name', 'first_name')
+    staff_retired_heroes = Hero.objects.filter(status='staff_retired').order_by('last_name', 'first_name')
     
     # Получаем ID героя из GET параметра
     hero_id = request.GET.get('hero_id')
@@ -199,7 +188,10 @@ def heroes(request):
     context = {
         'all_heroes': all_heroes,
         'active_heroes': active_heroes,
-        'retired_heroes': retired_heroes,
+        'dispatch_heroes': dispatch_heroes,
+        'retired_heroes': retired_heroes,  # Все отставленные вместе
+        'just_retired_heroes': just_retired_heroes,  # Только герои в отставке
+        'staff_retired_heroes': staff_retired_heroes,  # Персонал в отставке
         'selected_hero': selected_hero,
         'selected_hero_id': hero_id,
     }
@@ -218,17 +210,20 @@ def get_hero_data(request, hero_id):
             'gender': hero.get_gender_display(),
             'age': hero.age,
             'height': hero.height,
+            'superpower': hero.superpower,  # НОВОЕ ПОЛЕ
             'birth_place': hero.birth_place,
             'phone': hero.phone,
             'biography': hero.biography,
+            'superpower_description': hero.superpower_description,  # НОВОЕ ПОЛЕ
             'convicted_for': hero.convicted_for,
-            'is_active': hero.is_active,
+            'status': hero.status,  # Изменено с is_active на status
             'position': hero.position,
             'photo_url': hero.photo.url if hero.photo else '',
         }
         return JsonResponse(data)
     except Hero.DoesNotExist:
         return JsonResponse({'error': 'Герой не найден'}, status=404)
+
 
 def search(request):
     # Получаем всех людей, сгруппированных по статусу

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Review, Hero  # ← Добавляем Hero
+from .models import Review, Hero
 from datetime import datetime
 from django.utils import timezone
 
@@ -46,16 +46,14 @@ class ReviewForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Устанавливаем значение по умолчанию
-        if not self.instance.pk:  # Только для новых форм
+        if not self.instance.pk:
             self.fields['overall_rating'].initial = 1
-            self.fields['hero1_rating'].initial = 0  # По умолчанию "-"
+            self.fields['hero1_rating'].initial = 0
             self.fields['hero2_rating'].initial = 0
             self.fields['hero3_rating'].initial = 0
             self.fields['hero4_rating'].initial = 0
             self.fields['hero5_rating'].initial = 0
             
-            # Устанавливаем текущую дату и время
             now = datetime.now()
             self.fields['created_at'].initial = now.strftime('%Y-%m-%dT%H:%M')
     

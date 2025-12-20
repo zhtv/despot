@@ -8,31 +8,51 @@ class Hero(models.Model):
     aka = models.CharField(max_length=100, verbose_name="Прозвище", blank=True)
     
     # Биографические данные
-    race = models.CharField(max_length=100, verbose_name="Раса")  # ← Текстовое поле вместо choices
+    race = models.CharField(max_length=100, verbose_name="Раса")
     
     GENDER_CHOICES = [
         ('male', 'мужской'),
         ('female', 'женский'),
-        ('other', 'другое'),
+        ('other', 'другой'),
     ]
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, verbose_name="Пол", default='male')
     
     age = models.IntegerField(verbose_name="Возраст", null=True, blank=True)
     height = models.IntegerField(verbose_name="Рост (см)", null=True, blank=True)
+    superpower = models.CharField(max_length=200, verbose_name="Суперспособность", blank=True, null=True)
+    
     birth_place = models.CharField(max_length=100, verbose_name="Место рождения")
     phone = models.CharField(max_length=20, verbose_name="Номер телефона")
     
-    # Биография и статус
     biography = models.TextField(verbose_name="Биография")
+    superpower_description = models.TextField(verbose_name="Описание суперспособности", blank=True, null=True)
+    
     convicted_for = models.TextField(verbose_name="Осуждён за", blank=True)
     
     # Фотография
     photo = models.ImageField(upload_to='hero_photos/', blank=True, null=True, verbose_name="Фото")
     
-    # Статус
-    is_active = models.BooleanField(default=True, verbose_name="Действующий герой")
-    position = models.IntegerField(verbose_name="Позиция в списке (1-5)", null=True, blank=True, unique=True, 
-                                   help_text="Позиция от 1 до 5 для отображения в форме отзыва")
+    STATUS_CHOICES = [
+        ('active', 'Действующий герой'),
+        ('retired', 'В отставке'),
+        ('dispatch', 'Персонал'),
+        ('staff_retired', 'Персонал в отставке'),
+    ]
+    status = models.CharField(
+        max_length=20, 
+        choices=STATUS_CHOICES, 
+        verbose_name="Статус",
+        default='active'
+    )
+    
+    # Позиция - только для действующих героев
+    position = models.IntegerField(
+        verbose_name="Позиция в списке (1-5)", 
+        null=True, 
+        blank=True, 
+        unique=True, 
+        help_text="Позиция от 1 до 5 для отображения в форме отзыва"
+    )
     
     # Дополнительные поля
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления")
@@ -43,6 +63,11 @@ class Hero(models.Model):
     
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
+    
+    # Свойство для обратной совместимости
+    @property
+    def is_active(self):
+        return self.status == 'active'
     
     class Meta:
         verbose_name = "Герой"
@@ -156,9 +181,9 @@ class Person(models.Model):
     name = models.CharField(max_length=100, verbose_name="Имя")
     age = models.IntegerField(verbose_name="Возраст")
     city = models.CharField(max_length=50, choices=CITY_CHOICES, verbose_name="Город")
-    comment = models.TextField(verbose_name="Комментарий")
-    features = models.TextField(verbose_name="Приметы", blank=True)
     clothing = models.TextField(verbose_name="Одежда", blank=True)
+    features = models.TextField(verbose_name="Приметы", blank=True)
+    comment = models.TextField(verbose_name="Комментарий")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, verbose_name="Статус")
     
     # Дополнительные поля

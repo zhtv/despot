@@ -69,7 +69,6 @@
                                     <div class="no_photo">Нет фото</div>
                                 {% endif %}
                             </div>
-                            <!-- Имя, фамилия, прозвище и статус в одном блоке -->
                             <div class="hero_name_block">
                                 <div class="hero_name_row">
                                     <span class="detail_label">Имя:</span>
@@ -85,9 +84,16 @@
                                 </div>
                                 <div class="hero_name_row">
                                     <span class="detail_label">Статус:</span>
-                                    <span id="heroStatus" class="detail_value status-{% if selected_hero and selected_hero.is_active %}active{% else %}retired{% endif %}">
+                                    <span id="heroStatus" class="detail_value 
                                         {% if selected_hero %}
-                                            {% if selected_hero.is_active %}действующий герой{% else %}в отставке{% endif %}
+                                            {% if selected_hero.status == 'active' %}status-active
+                                            {% elif selected_hero.status == 'dispatch' %}status-dispatch
+                                            {% else %}status-retired{% endif %}
+                                        {% endif %}">
+                                        {% if selected_hero %}
+                                            {% if selected_hero.status == 'active' %}действующий герой
+                                            {% elif selected_hero.status == 'dispatch' %}диспетчер
+                                            {% else %}в отставке{% endif %}
                                         {% endif %}
                                     </span>
                                 </div>
@@ -116,6 +122,16 @@
                                 <span id="heroHeight" class="detail_value">{% if selected_hero and selected_hero.height %}{{ selected_hero.height }} см{% else %}не указан{% endif %}</span>
                             </div>
                             <div class="hero_detail_row">
+                                <span class="detail_label">Способность:</span>
+                                <span id="heroSuperpower" class="detail_value">
+                                    {% if selected_hero and selected_hero.superpower %}
+                                        {{ selected_hero.superpower }}
+                                    {% else %}
+                                        [—]
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="hero_detail_row">
                                 <span class="detail_label">М. рож.:</span>
                                 <span id="heroBirthPlace" class="detail_value">{% if selected_hero %}{{ selected_hero.birth_place }}{% endif %}</span>
                             </div>
@@ -128,12 +144,46 @@
                                 <a>Рабочая информация</a>
                             </div>
                             <div class="hero_detail_row2">
-                                <span class="detail_label">Биография:</span>
-                                <div id="heroBiography" class="hero_biography detail_value2">{% if selected_hero %}{{ selected_hero.biography|linebreaks }}{% endif %}</div>
+                                <span class="detail_label">Описание суперспособности:</span>
+                                <div id="heroSuperpowerDescription" class="hero_convicted detail_value2">
+                                    {% if selected_hero and selected_hero.superpower_description %}
+                                        {{ selected_hero.superpower_description|linebreaks }}
+                                    {% else %}
+                                        [—]
+                                    {% endif %}
+                                </div>
                             </div>
                             <div class="hero_detail_row2">
-                                <span class="detail_label">Нарушение:</span>
-                                <div id="heroConvicted" class="hero_convicted detail_value2">{% if selected_hero and selected_hero.convicted_for %}{{ selected_hero.convicted_for|linebreaks }}{% else %}нет информации{% endif %}</div>
+                                <span id="biographyLabel" class="detail_label">
+                                    {% if selected_hero and selected_hero.status in 'dispatch,staff_retired' %}
+                                        Пассивное умение:
+                                    {% else %}
+                                        Биография:
+                                    {% endif %}
+                                </span>
+                                <div id="heroBiography" class="hero_biography detail_value2">
+                                    {% if selected_hero %}{{ selected_hero.biography|linebreaks }}{% endif %}
+                                </div>
+                            </div>
+                            <div class="hero_detail_row2">
+                                <span id="convictedLabel" class="detail_label">
+                                    {% if selected_hero and selected_hero.status in 'dispatch,staff_retired' %}
+                                        Активное умение:
+                                    {% else %}
+                                        Нарушение:
+                                    {% endif %}
+                                </span>
+                                <div id="heroConvicted" class="hero_convicted detail_value2">
+                                    {% if selected_hero and selected_hero.convicted_for %}
+                                        {{ selected_hero.convicted_for|linebreaks }}
+                                    {% else %}
+                                        {% if selected_hero and selected_hero.status in 'dispatch,staff_retired' %}
+                                            нет информации об активном умении
+                                        {% else %}
+                                            нет информации
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -164,13 +214,34 @@
             </div>
 
             <div class="main_right_name font-2">
+                <a>Диспетчеры</a>
+            </div>
+
+            <div class="rightpanel_block">
+                {% for hero in dispatch_heroes %}
+                <div class="rightpanel_item hero-select-item {% if selected_hero and selected_hero.id == hero.id %}selected{% endif %}"
+                     data-hero-id="{{ hero.id }}">
+                    <div class="dispatch_info">
+                        <div class="dispatch_name mon font-125">
+                            {{ hero.first_name }} <b>«{{ hero.aka }}»</b> {{ hero.last_name }}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no_dispatch">
+                    <span class="mon font-125">Нет диспетчеров.</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="main_right_name font-2">
                 <a>Герои в отставке</a>
             </div>
 
             <div class="rightpanel_block">
                 {% for hero in retired_heroes %}
                 <div class="rightpanel_item hero-select-item {% if selected_hero and selected_hero.id == hero.id %}selected{% endif %}"
-                     data-hero-id="{{ hero.id }}">
+                    data-hero-id="{{ hero.id }}">
                     <div class="retired_hero_info">
                         <div class="retired_hero_name mon font-125">
                             {{ hero.first_name }} <b>«{{ hero.aka }}»</b> {{ hero.last_name }}
