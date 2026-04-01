@@ -38,7 +38,7 @@
             </div>
 
             <div class="advertisement">
-                <a href="https://drugvokrug.ru"><img src="{% static 'img/advert.gif' %}"></a>
+                <a href="https://www.youtube.com/watch?v=cwMFIuz2lxw"><img src="{% static 'img/nerpa.jpg' %}"></a>
             </div>
         </div>
 
@@ -84,15 +84,17 @@
                                 </div>
                                 <div class="hero_name_row">
                                     <span class="detail_label">Статус:</span>
-                                    <span id="heroStatus" class="detail_value 
+                                    <span id="heroStatus" class="detail_value
                                         {% if selected_hero %}
                                             {% if selected_hero.status == 'active' %}status-active
                                             {% elif selected_hero.status == 'dispatch' %}status-dispatch
+                                            {% elif selected_hero.status == 'staff_retired' %}status-staff-retired
                                             {% else %}status-retired{% endif %}
                                         {% endif %}">
                                         {% if selected_hero %}
                                             {% if selected_hero.status == 'active' %}действующий герой
                                             {% elif selected_hero.status == 'dispatch' %}диспетчер
+                                            {% elif selected_hero.status == 'staff_retired' %}персонал в отставке
                                             {% else %}в отставке{% endif %}
                                         {% endif %}
                                     </span>

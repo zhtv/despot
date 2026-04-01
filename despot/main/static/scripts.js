@@ -4,7 +4,7 @@ function createStars(rating) {
     if (rating === 0) {
         return '-';  // Возвращаем "-" если оценка 0
     }
-    
+
     let stars = '';
     for (let i = 0; i < 5; i++) {
         if (i < rating) {
@@ -48,19 +48,19 @@ function showPersonModal(personId) {
                 alert('Ошибка загрузки данных');
                 return;
             }
-            
+
             console.log('Данные человека:', data); // Для отладки
-            
+
             // Создаем HTML для модального окна
             let modalHTML = `
                 <div class="modal-person-header">
                     <span class="modal-person-name font-2">${data.name}</span>
                 </div>
-                
+
                 <div class="modal-person-content">
                     <div class="modal-person-left">
-                        ${data.photo_url ? 
-                            `<img src="${data.photo_url}" alt="${data.name}" class="modal-person-photo">` : 
+                        ${data.photo_url ?
+                            `<img src="${data.photo_url}" alt="${data.name}" class="modal-person-photo">` :
                             '<div class="no-photo">Нет фото</div>'
                         }
                         <div class="modal-person-detail">
@@ -76,7 +76,7 @@ function showPersonModal(personId) {
                             <span class="detail-value">${data.status}</span>
                         </div>
                     </div>
-                    
+
                     <div class="modal-person-details">
                         <div class="modal-person-comment">
                             <div class="detail-title">Одежда</div>
@@ -93,11 +93,11 @@ function showPersonModal(personId) {
                     </div>
                 </div>
             `;
-            
+
             // Вставляем HTML в модальное окно
             const modalInfo = document.querySelector('.modal-person-info');
             modalInfo.innerHTML = modalHTML;
-            
+
             // Показываем модальное окно
             const modal = document.getElementById('personModal');
             modal.style.display = 'flex';
@@ -114,7 +114,7 @@ function showReviewModal(reviewElement) {
     const name = reviewElement.dataset.name;
     const date = reviewElement.dataset.date;
     const overallRating = parseInt(reviewElement.dataset.overallRating);
-    
+
     // ПРОСТО получаем прозвища героев
     const hero1Name = reviewElement.dataset.hero1Name;
     const hero1Rating = parseInt(reviewElement.dataset.hero1Rating);
@@ -126,20 +126,20 @@ function showReviewModal(reviewElement) {
     const hero4Rating = parseInt(reviewElement.dataset.hero4Rating);
     const hero5Name = reviewElement.dataset.hero5Name;
     const hero5Rating = parseInt(reviewElement.dataset.hero5Rating);
-    
+
     const text = reviewElement.dataset.text;
     const photoUrl = reviewElement.dataset.photoUrl;
-    
+
     // Форматируем текст с сохранением переносов строк
     const formattedText = formatTextWithLineBreaks(text);
-    
+
     // Создаем HTML для модального окна
     let modalHTML = `
         <div class="modal-review-header">
             <span class="modal-review-name font-2">${name}</span>
             <span class="modal-review-date mon">${date}</span>
         </div>
-        
+
         <div class="modal-review-rating-section">
             <div class="modal-sides">
                 <div class="modal-rating-item">
@@ -180,17 +180,17 @@ function showReviewModal(reviewElement) {
     // Завершаем HTML
     modalHTML += `
             </div>
-            
+
             <div class="modal-review-text font-1 mon">
                 ${formattedText}
             </div>
         </div>
     `;
-    
+
     // Вставляем HTML в модальное окно
     const modalInfo = document.querySelector('.modal-review-info');
     modalInfo.innerHTML = modalHTML;
-    
+
     // Показываем модальное окно
     const modal = document.getElementById('reviewModal');
     modal.style.display = 'flex';
@@ -201,6 +201,11 @@ function getHeroData(heroId, callback) {
     fetch(`/get-hero-data/${heroId}/`)
         .then(response => response.json())
         .then(data => {
+            console.log('AJAX RESPONSE DATA:', data); // ДЛЯ ОТЛАДКИ
+            console.log('Status from server:', data.status);
+            console.log('Status display from server:', data.status_display);
+            console.log('Status class from server:', data.status_class);
+
             if (data.error) {
                 console.error('Ошибка:', data.error);
                 return;
@@ -214,6 +219,8 @@ function getHeroData(heroId, callback) {
 
 // Функция для отображения героя
 function showHero(heroData) {
+    console.log('showHero called with data:', heroData); // ДЛЯ ОТЛАДКИ
+
     // Скрываем сообщение и показываем карточку
     document.getElementById('noHeroSelected').style.display = 'none';
     const heroCard = document.getElementById('heroCard');
@@ -225,37 +232,42 @@ function showHero(heroData) {
     document.getElementById('heroAka').textContent = heroData.aka;
     document.getElementById('heroRace').textContent = heroData.race;
     document.getElementById('heroGender').textContent = heroData.gender;
-    
+
     // Возраст (может быть null)
     if (heroData.age) {
         document.getElementById('heroAge').textContent = heroData.age;
     } else {
         document.getElementById('heroAge').textContent = 'не указан';
     }
-    
+
     // Рост (может быть null)
     if (heroData.height) {
         document.getElementById('heroHeight').textContent = heroData.height + 'см';
     } else {
         document.getElementById('heroHeight').textContent = 'не указан';
     }
-    
-    // НОВОЕ ПОЛЕ: Суперспособность (может быть null)
+
+    // Суперспособность (может быть null)
     const superpowerElement = document.getElementById('heroSuperpower');
     if (superpowerElement) {
         if (heroData.superpower) {
             superpowerElement.textContent = heroData.superpower;
         } else {
-            superpowerElement.textContent = 'не указана';
+            superpowerElement.textContent = '[—]';
         }
     }
-    
+
     document.getElementById('heroBirthPlace').textContent = heroData.birth_place;
     document.getElementById('heroPhone').textContent = heroData.phone;
-    document.getElementById('heroBiography').innerHTML = heroData.biography ? 
-        heroData.biography.replace(/\n/g, '<br>') : '';
-    
-    // НОВОЕ ПОЛЕ: Описание суперспособности (может быть null)
+
+    // Биография
+    const biographyElement = document.getElementById('heroBiography');
+    if (biographyElement) {
+        biographyElement.innerHTML = heroData.biography ?
+            heroData.biography.replace(/\n/g, '<br>') : '';
+    }
+
+    // Описание суперспособности
     const superpowerDescElement = document.getElementById('heroSuperpowerDescription');
     if (superpowerDescElement) {
         if (heroData.superpower_description) {
@@ -264,12 +276,12 @@ function showHero(heroData) {
             superpowerDescElement.innerHTML = '[—]';
         }
     }
-    
-    // Обновляем текст для полей в зависимости от статуса
+
+    // Нарушение/Активное умение
     const convictedElement = document.getElementById('heroConvicted');
     const convictedLabel = document.getElementById('convictedLabel');
     const biographyLabel = document.getElementById('biographyLabel');
-    
+
     if (convictedElement) {
         if (heroData.convicted_for) {
             convictedElement.innerHTML = heroData.convicted_for.replace(/\n/g, '<br>');
@@ -281,7 +293,7 @@ function showHero(heroData) {
             }
         }
     }
-    
+
     // Меняем заголовки в зависимости от статуса
     if (heroData.status === 'dispatch' || heroData.status === 'staff_retired') {
         if (biographyLabel) biographyLabel.textContent = 'Пассивное умение:';
@@ -290,39 +302,52 @@ function showHero(heroData) {
         if (biographyLabel) biographyLabel.textContent = 'Биография:';
         if (convictedLabel) convictedLabel.textContent = 'Нарушение:';
     }
-    
-    // Обновляем отображение статуса
+
+    // САМОЕ ВАЖНОЕ: Обновляем статус ПРОСТЫМ способом
     const statusElement = document.getElementById('heroStatus');
     if (statusElement) {
-        let statusText = '';
-        let statusClass = '';
-        
-        // Используем новый статус из heroData
-        if (heroData.status === 'active') {
-            statusText = 'действующий герой';
-            statusClass = 'detail_value status-active';
-        } else if (heroData.status === 'dispatch') {
-            statusText = 'диспетчер';
-            statusClass = 'detail_value status-dispatch';
-        } else if (heroData.status === 'staff_retired') {
-            statusText = 'персонал в отставке';
-            statusClass = 'detail_value status-staff-retired';
-        } else if (heroData.status === 'retired') {
-            statusText = 'в отставке';
-            statusClass = 'detail_value status-retired';
+        if (heroData.status_display) {
+            // Используем готовый текст статуса с сервера
+            statusElement.textContent = heroData.status_display;
+            console.log('Статус установлен из status_display:', heroData.status_display);
         } else {
-            // Для обратной совместимости
-            if (heroData.is_active) {
+            // Резервная логика (должна срабатывать только если сервер не вернул status_display)
+            console.log('WARNING: status_display не получен от сервера, использую резервную логику');
+            let statusText = '';
+            if (heroData.status === 'active') {
                 statusText = 'действующий герой';
-                statusClass = 'detail_value status-active';
-            } else {
+            } else if (heroData.status === 'dispatch') {
+                statusText = 'диспетчер';
+            } else if (heroData.status === 'staff_retired') {
+                statusText = 'персонал в отставке';
+            } else if (heroData.status === 'retired') {
                 statusText = 'в отставке';
-                statusClass = 'detail_value status-retired';
+            } else {
+                statusText = 'неизвестный статус: ' + heroData.status;
             }
+            statusElement.textContent = statusText;
         }
-        
-        statusElement.textContent = statusText;
-        statusElement.className = statusClass;
+
+        // CSS класс для статуса
+        if (heroData.status_class) {
+            statusElement.className = 'detail_value ' + heroData.status_class;
+            console.log('Класс статуса установлен:', heroData.status_class);
+        } else {
+            // Резервная логика для CSS класса
+            let statusClass = '';
+            if (heroData.status === 'active') {
+                statusClass = 'detail_value status-active';
+            } else if (heroData.status === 'dispatch') {
+                statusClass = 'detail_value status-dispatch';
+            } else if (heroData.status === 'staff_retired') {
+                statusClass = 'detail_value status-staff-retired';
+            } else if (heroData.status === 'retired') {
+                statusClass = 'detail_value status-retired';
+            } else {
+                statusClass = 'detail_value';
+            }
+            statusElement.className = statusClass;
+        }
     }
 
     // Фото героя
@@ -358,11 +383,11 @@ function openHeroOnPageLoad() {
     // Проверяем, есть ли в URL параметр hero_id
     const urlParams = new URLSearchParams(window.location.search);
     const heroId = urlParams.get('hero_id');
-    
+
     if (heroId && document.querySelector('.hero-select-item')) {
         // Загружаем данные героя и отображаем их
         getHeroData(heroId, showHero);
-        
+
         // Прокручиваем к карточке героя
         setTimeout(() => {
             const heroCard = document.getElementById('heroCard');
@@ -380,7 +405,7 @@ function initHeroesPage() {
         item.addEventListener('click', function() {
             const heroId = this.getAttribute('data-hero-id');
             getHeroData(heroId, showHero);
-            
+
             // КОММЕНТИРУЕМ: обновление URL в истории браузера
             // Теперь при обновлении страницы выбранная вкладка сбросится
             // const url = new URL(window.location);
@@ -388,7 +413,7 @@ function initHeroesPage() {
             // window.history.pushState({}, '', url);
         });
     });
-    
+
     // Автоматически открываем героя при загрузке страницы
     openHeroOnPageLoad();
 }
@@ -398,21 +423,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('reviewModal');
     const closeBtn = document.querySelector('.modal-close');
     const reviewBlocks = document.querySelectorAll('.review_block');
-    
+
     // Добавляем обработчики клика на каждый отзыв
     reviewBlocks.forEach(reviewBlock => {
         reviewBlock.addEventListener('click', function() {
             showReviewModal(this);
         });
     });
-    
+
     // Закрытие модального окна по крестику
     if (closeBtn) {
         closeBtn.addEventListener('click', function() {
             modal.style.display = 'none';
         });
     }
-    
+
     // Закрытие модального окна по клику вне его
     if (modal) {
         modal.addEventListener('click', function(event) {
@@ -421,7 +446,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     // Закрытие модального окна по клавише Esc
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape' && modal) {
@@ -442,17 +467,17 @@ document.addEventListener('DOMContentLoaded', function() {
             showPersonModal(personId);
         });
     });
-    
+
     // Закрытие модального окна для персон
     const personModal = document.getElementById('personModal');
     const personCloseBtn = personModal?.querySelector('.modal-close');
-    
+
     if (personCloseBtn) {
         personCloseBtn.addEventListener('click', function() {
             personModal.style.display = 'none';
         });
     }
-    
+
     if (personModal) {
         personModal.addEventListener('click', function(event) {
             if (event.target === personModal) {
@@ -460,7 +485,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     // Закрытие по Esc
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {

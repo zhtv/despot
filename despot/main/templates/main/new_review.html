@@ -35,17 +35,17 @@
                     <span>Вы вошли как: {{ user.username }}</span>
                     <a href="{% url 'logout' %}">Выйти</a>
                 {% endif %}
-            </div>            
-            
+            </div>
+
             <div class="advertisement">
-                <a href="https://drugvokrug.ru"><img src="{% static 'img/advert.gif' %}"></a>
+                <a href="https://t.me/sosik_h3h/730"><img src="{% static 'img/bepsi.jpg' %}"></a>
             </div>
         </div>
 
         <div class="main_center">
             <div class="base">
                 <div class="hello red_block font-2">
-                    <a>Добро пожаловать в Деспот!</a>
+                    <a>Спасибо за обращение к нам!</a>
                 </div>
                 <div class="state blue_block font-125">
                     <a>Вы находитесь в штате: Анжеро</a>
@@ -55,11 +55,10 @@
             <div class="info">
                 <div class="info_text_blocks">
                     <div class="info_text red_block mon font-125">
-                        <a>Упали с лестницы? Заметили подозрительного человека в торговном центре? 
-                            Ваша кошка залезла на дерево? Не беда!</a>
+                        <a>Получили помощь от героев Деспота? Пожалуйста, поделитесь вашим честным опытом о выполненном задании и <b>оставьте отзыв о команде!</b></a>
                     </div>
                     <div class="info_text red_block mon font-125">
-                        <a>Свяжитесь с отделом <b>Деспота</b>, и вам на помощь придут квалифицированные герои!</a>
+                        <a>Ваши отзывы помогают нам улучшать систему и отслеживать качество квалификации героев.</a>
                     </div>
                     <div class="info_text red_block mon font-125">
                         <a><b>Экстренные номера:</b></a><br>
@@ -68,7 +67,7 @@
                         <a>+7(921)124-67-68 <b>/</b> +7(913)808-56-12</a>
                     </div>
                 </div>
-                
+
                 <div class="info_image blue_block">
                     <img src="{% static 'img/cop.jpg' %}">
                 </div>
@@ -80,10 +79,10 @@
                 <a>Оставить отзыв</a>
                 <span class="mon">Обязательные поля помечены <span class="white_star">*</span></span>
             </div>
-            
+
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                
+
                 <div class="form_group mon font-15">
                     <label>Имя<span class="white_star">*</span></label>
                     {{ form.name }}
@@ -91,7 +90,7 @@
                         <div>{{ form.name.errors }}</div>
                     {% endif %}
                 </div>
-                
+
                 <!-- Поле для даты (из формы Django) -->
                 <div class="form_group mon font-15">
                     <label>Дата и время отзыва</label>
@@ -100,7 +99,7 @@
                         <div>{{ form.created_at.errors }}</div>
                     {% endif %}
                 </div>
-                
+
                 <div class="form_group mon font-15">
                     <label>Общая оценка<span class="white_star">*</span></label>
                     {{ form.overall_rating }}
@@ -108,7 +107,7 @@
                         <div>{{ form.overall_rating.errors }}</div>
                     {% endif %}
                 </div>
-                
+
                 <!-- Динамические поля для героев -->
                 {% for hero in active_heroes %}
                 <div class="form_group mon font-15">
@@ -126,7 +125,7 @@
                     {% endif %}
                 </div>
                 {% endfor %}
-                
+
                 <!-- Если героев меньше 5, показываем оставшиеся поля как "не выбрано" -->
                 {% for i in "12345" %}
                     {% with position=forloop.counter %}
@@ -148,7 +147,7 @@
                         {% endif %}
                     {% endwith %}
                 {% endfor %}
-                
+
                 <div class="form_group mon font-15">
                     <label>Как всё прошло?<span class="white_star">*</span></label>
                     {{ form.text }}
@@ -156,17 +155,17 @@
                         <div>{{ form.text.errors }}</div>
                     {% endif %}
                 </div>
-                
+
                 <div class="form_group mon font-15">
                     <label>Фото на память :)</label>
                     {{ form.photo }}
                 </div>
-                
+
                 <button type="submit" class="red_button font-15">Отправить отзыв</button>
             </form>
         </div>
     </main>
-    
+
     <script src="{% static 'scripts.js' %}"></script>
 </body>
 </html>

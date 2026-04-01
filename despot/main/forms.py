@@ -6,7 +6,7 @@ from django.utils import timezone
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ['name', 'created_at', 'overall_rating', 'hero1_rating', 'hero2_rating', 
+        fields = ['name', 'created_at', 'overall_rating', 'hero1_rating', 'hero2_rating',
                  'hero3_rating', 'hero4_rating', 'hero5_rating', 'text', 'photo']
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Введите ваше имя'}),
@@ -43,7 +43,7 @@ class ReviewForm(forms.ModelForm):
                 attrs={'class': 'rating_radio'}
             ),
         }
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if not self.instance.pk:
@@ -53,10 +53,10 @@ class ReviewForm(forms.ModelForm):
             self.fields['hero3_rating'].initial = 0
             self.fields['hero4_rating'].initial = 0
             self.fields['hero5_rating'].initial = 0
-            
+
             now = datetime.now()
             self.fields['created_at'].initial = now.strftime('%Y-%m-%dT%H:%M')
-    
+
     def clean_created_at(self):
         created_at = self.cleaned_data.get('created_at')
         if not created_at:
