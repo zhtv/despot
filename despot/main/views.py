@@ -232,7 +232,7 @@ def get_hero_data(request, hero_id):
             'age': hero.age,
             'height': hero.height,
             'superpower': hero.superpower,
-            'birth_place': hero.birth_place,
+            'birth_place': hero.get_birth_place_display(),
             'phone': hero.phone,
             'biography': hero.biography,
             'superpower_description': hero.superpower_description,
