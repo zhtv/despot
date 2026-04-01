@@ -135,7 +135,7 @@
                             </div>
                             <div class="hero_detail_row">
                                 <span class="detail_label">М. рож.:</span>
-                                <span id="heroBirthPlace" class="detail_value">{% if selected_hero %}{{ selected_hero.birth_place }}{% endif %}</span>
+                                <span id="heroBirthPlace" class="detail_value">{% if selected_hero %}{{ selected_hero.get_birth_place_display }}{% endif %}</span>
                             </div>
                             <div class="hero_detail_row">
                                 <span class="detail_label">Тел.:</span>
