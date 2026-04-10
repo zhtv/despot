@@ -1,0 +1,186 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'media.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Prosto+One&display=swap" rel="stylesheet">
+    <title>Д Е С П О Т</title>
+</head>
+<body>
+    <main>
+        <div class="main_left">
+            <div class="logo">
+                <a href="{% url 'index' %}"><img src="{% static 'img/logo.png' %}"></a>
+                <a>Деспот</a>
+            </div>
+
+            <div class="nav">
+                <a href="{% url 'reviews' %}">Все отзывы</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'new_review' %}">Оставить отзыв...</a>
+                {% else %}
+                    <a href="{% url 'auth' %}">Оставить отзыв...</a>
+                {% endif %}
+                <a href="{% url 'heroes' %}">Досье</a>
+                <a href="{% url 'search' %}">Поиск и розыск</a>
+
+                {% if user.is_authenticated %}
+                    <span>Вы вошли как: {{ user.username }}</span>
+                    <a href="{% url 'logout' %}">Выйти</a>
+                {% endif %}
+            </div>            
+            
+            <div class="advertisement">
+                <a href="https://www.wildberries.ru/catalog/203690259/detail.aspx?size=328019405"><img src="{% static 'img/fats.gif' %}"></a>
+            </div>
+        </div>
+
+        <div class="main_center">
+            <div class="red_block font-2">
+                <a>Демонстрация</a>
+            </div>
+
+            <!-- ССЫЛКИ -->
+            <section id="links">
+                <h3>Ссылки</h3>
+                <a href="https://google.com">Внешняя ссылка (любая рекламная)</a>
+                <a href="#anchor">Якорная ссылка вниз</a>
+                <a href="{% url 'index' %}">Внутренняя ссылка (любая из меню)</a>
+            </section>
+
+            <!-- СПИСКИ -->
+            <section id="list">
+                <h3>Списки</h3>
+                <a>Незаконченные дела:</a>
+                <ol>
+                    <li>заварить выход на задний двор в общежитии деспота;</li>
+                    <li>положить их сайт;</li>
+                    <li>достать номер бухгалтера;</li>
+                    <li>скрыть эту страницу, чтобы админы её не нашли.</li>
+                </ol>
+
+                <a>Постоянно забываю:</a>
+                <dl>
+                    <dt>ОРЗД</dt>
+                    <dd>Отдел по работе с заряженными магией детьми</dd>
+                    <dt>Демиург</dt>
+                    <dd>Серая тварь</dd>
+                </dl>
+            </section>
+
+            <!-- ТАБЛИЦЫ -->
+            <section>
+                <h3>Дурацкие способности</h3>
+
+                <table border="1">
+                    <tr>
+                        <th>Градация</th>
+                        <th>Ключевые моменты</th>
+                    </tr>
+                    <tr>
+                        <td>Базовая заряженность магией</td>
+                        <td>
+                            <ul>
+                                <li>Особенные магические способности на уровне заговоров, не требующие сильных затрат энергии.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Вестник</td>
+                        <td>
+                            <ul>
+                                <li>Временное усиление (повышение защиты, урона, здоровья, улучшение способности) раз в один продолжительный отдых;</li>
+                                <li>можно контролировать 2 способности в одном теле;</li>
+                                <li>возможны незначительные изменения внешности;</li>
+                                <li>увеличение базовой продолжительности жизни при раскрытии данного уровня развития;</li>
+                                <li>если переборщить с использованием, можно умереть.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Адепт</td>
+                        <td>
+                            <ul>
+                                <li>Перманентный и ещё больше усиленный Вестник без ограничений, basically полубоги;</li>
+                                <li>можно контролировать 3-5 способностей в одном теле;</li>
+                                <li>финальная точка развития для большинства заряженных магией.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Демиург</td>
+                        <td>
+                            <ul>
+                                <li>Редкая мутация заряженности, равны по силе богам;</li>
+                                <li>схожи внешне (цвет волос, наросты, похожие на рога);</li>
+                                <li>могут перевоплощаться в оружие.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Прекрасный Я!</td>
+                        <td>
+                            <table border="1">
+                                <tr>
+                                    <td><img src="{% static 'img/vollk.png' %}" width="50"></td>
+                                    <td>Самый лучший, замечательный, великолепный и недооценённый сотрудник.</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </section>
+
+                <div id="anchor">
+                    <a>Якорь достигнут</a>
+                </div>
+
+            <!-- JAVASCRIPT -->
+            <section>
+                <h3>JavaScript</h3>
+
+                <!-- обработчик события -->
+                <button onclick="showAlert()">Отправить тысячу спам-звонков в колл-центр</button>
+
+                <button onclick="askName()">Проверить, прав ли я</button>
+            </section>
+
+            <!-- ВСТРОЕННЫЙ JS -->
+            <script>
+                function showAlert() {
+                    alert("Тысяча спам-звонков отправлена!");
+                }
+
+                function askName() {
+                    let name = prompt("Как зовут великолепного меня сегодня?");
+                    alert("Вы как всегда правы, " + name + "!");
+                }
+            </script>
+        </div>
+
+        <div class="main_right">
+            <div class="main_right_name font-2">
+                <a>Внимание!</a>
+            </div>
+            <div class="search_info mon font-125">
+                <a>Если вы попали на данную страницу, значит, произошла ошибка. <b>Деспот не несёт
+                    ответственности</b> за контент, представленный на данной странице.
+                </a>
+            </div>
+            <div class="search_info mon font-125">
+                <a>ВЫКУСИ, ДЕСПОТ! НА ЭТОЙ СТРАНИЦЕ Я КОРОЛЬ!</a>
+            </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'scripts.js' %}"></script>
+</body>
+</html>

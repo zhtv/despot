@@ -20,6 +20,9 @@ def index(request):
 def index2(request):
     return render(request, "main/index2.html")
 
+def demonstration(request):
+    return render(request, "main/demonstration.html")
+
 def adblock(request):
     return render(request, "main/adblock.html")
 

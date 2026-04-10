@@ -855,3 +855,51 @@ input {
     display: flex;
     flex-direction: column;
 }
+
+/* ДЕМОНСТРАЦИЯ */
+
+section {
+    font-family: Montserrat;
+}
+
+#links {
+    display: flex;
+    flex-direction: column;
+}
+
+#anchor {
+    color: #005ebd;
+    font-weight: bold;
+    margin-top: 3%;
+}
+
+table {
+    border-style: double;
+    border: 5px #005ebd double;
+    background-color: white;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+td, th {
+    padding: 0px;
+    margin: 0;
+}
+
+td {
+    padding: 5px;
+    font-size: 1.25rem;
+}
+
+table
+
+#links ul, #links ol {
+    margin-bottom: 15px;
+}
+
+section ol, section dl {
+    font-size: 1.25rem;
+    margin-top: 0;
+}

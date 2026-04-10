@@ -71,7 +71,7 @@
                         data-hero5-name="{{ review.hero5.aka|escapejs }}"
                         data-hero5-rating="{{ review.hero5_rating }}"
                         
-                        data-text="{{ review.text|escapejs }}"
+                        data-text="{{ review.text|escape }}"
                         data-photo-url="{% if review.photo %}{{ review.photo.url }}{% endif %}">
                         
                         <div class="review_left">
