@@ -16,7 +16,7 @@ class HeroAdmin(admin.ModelAdmin):
             'fields': ('race', 'gender', 'age', 'height', 'superpower', 'birth_place', 'phone')
         }),
         ('Дополнительная информация', {
-            'fields': ('superpower_description', 'biography', 'convicted_for'),
+            'fields': ('superpower_description', 'position_text', 'biography', 'convicted_for'),
             'description': 'Для персонала: "биография" = "ПАССИВНОЕ УМЕНИЕ", "осуждён за" = "АКТИВНОЕ УМЕНИЕ"'
         }),
         ('Статус', {

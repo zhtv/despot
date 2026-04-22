@@ -20,6 +20,9 @@ def index(request):
 def index2(request):
     return render(request, "main/index2.html")
 
+def news(request):
+    return render(request, "main/news.html")
+
 def demonstration(request):
     return render(request, "main/demonstration.html")
 
@@ -168,6 +171,7 @@ def heroes(request):
     all_heroes = Hero.objects.all().order_by('last_name', 'first_name')
     active_heroes = Hero.objects.filter(status='active').order_by('position')
     dispatch_heroes = Hero.objects.filter(status='dispatch').order_by('last_name', 'first_name')
+    staff_heroes = Hero.objects.filter(status='staff').order_by('last_name', 'first_name')
 
     # Объединяем оба типа отставки для отображения в одном разделе
     retired_heroes = Hero.objects.filter(
@@ -192,6 +196,7 @@ def heroes(request):
         'all_heroes': all_heroes,
         'active_heroes': active_heroes,
         'dispatch_heroes': dispatch_heroes,
+        'staff_heroes': staff_heroes,
         'retired_heroes': retired_heroes,  # Все отставленные вместе
         'just_retired_heroes': just_retired_heroes,  # Только герои в отставке
         'staff_retired_heroes': staff_retired_heroes,  # Персонал в отставке
@@ -209,6 +214,7 @@ def get_hero_data(request, hero_id):
         status_display_map = {
             'active': 'действующий герой',
             'dispatch': 'диспетчер',
+            'staff': 'персонал',
             'staff_retired': 'персонал в отставке',
             'retired': 'в отставке',
         }
@@ -217,6 +223,7 @@ def get_hero_data(request, hero_id):
         status_class_map = {
             'active': 'status-active',
             'dispatch': 'status-dispatch',
+            'staff': 'status-staff',
             'staff_retired': 'status-staff-retired',
             'retired': 'status-retired',
         }
@@ -239,6 +246,7 @@ def get_hero_data(request, hero_id):
             'phone': hero.phone,
             'biography': hero.biography,
             'superpower_description': hero.superpower_description,
+            'position_text': hero.position_text,
             'convicted_for': hero.convicted_for,
             'status': hero.status,  # Это должно быть 'dispatch', 'staff_retired', и т.д.
             'status_display': status_display,  # Это должно быть 'диспетчер', 'персонал в отставке'

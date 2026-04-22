@@ -740,6 +740,7 @@ input {
 .search_cards {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
 }
 
 /* Стили для карточек людей */

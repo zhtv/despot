@@ -257,6 +257,25 @@ function showHero(heroData) {
         }
     }
 
+    // этот блять... как его... должность
+    const positionElement = document.getElementById('heroPositionText');
+    const positionRow = document.getElementById('heroPositionRow'); // 👈 важно
+
+    if (positionElement) {
+        if (heroData.position_text) {
+            positionElement.innerHTML = heroData.position_text.replace(/\n/g, '<br>');
+        } else {
+            positionElement.innerHTML = '[—]';
+        }
+    }
+
+    // 👇 вот сюда ты вставляешь свою логику
+    if (['dispatch', 'staff', 'staff_retired'].includes(heroData.status)) {
+        if (positionRow) positionRow.style.display = 'block';
+    } else {
+        if (positionRow) positionRow.style.display = 'none';
+    }
+
     document.getElementById('heroBirthPlace').textContent = heroData.birth_place;
     document.getElementById('heroPhone').textContent = heroData.phone;
 
@@ -286,7 +305,7 @@ function showHero(heroData) {
         if (heroData.convicted_for) {
             convictedElement.innerHTML = heroData.convicted_for.replace(/\n/g, '<br>');
         } else {
-            if (heroData.status === 'dispatch' || heroData.status === 'staff_retired') {
+            if (heroData.status === 'dispatch' || heroData.status === 'staff' || heroData.status === 'staff_retired') {
                 convictedElement.innerHTML = 'нет информации об активном умении';
             } else {
                 convictedElement.innerHTML = 'нет информации';
@@ -298,6 +317,9 @@ function showHero(heroData) {
     if (heroData.status === 'dispatch' || heroData.status === 'staff_retired') {
         if (biographyLabel) biographyLabel.textContent = 'Пассивное умение:';
         if (convictedLabel) convictedLabel.textContent = 'Активное умение:';
+    } else if (heroData.status === 'staff') {
+        if (biographyLabel) biographyLabel.textContent = 'Биография:';
+        if (convictedLabel) convictedLabel.textContent = 'Нарушение:';
     } else {
         if (biographyLabel) biographyLabel.textContent = 'Биография:';
         if (convictedLabel) convictedLabel.textContent = 'Нарушение:';
@@ -318,6 +340,8 @@ function showHero(heroData) {
                 statusText = 'действующий герой';
             } else if (heroData.status === 'dispatch') {
                 statusText = 'диспетчер';
+            } else if (heroData.status === 'staff') {
+                statusText = 'персонал';
             } else if (heroData.status === 'staff_retired') {
                 statusText = 'персонал в отставке';
             } else if (heroData.status === 'retired') {
@@ -339,6 +363,8 @@ function showHero(heroData) {
                 statusClass = 'detail_value status-active';
             } else if (heroData.status === 'dispatch') {
                 statusClass = 'detail_value status-dispatch';
+            } else if (heroData.status === 'staff') {
+                statusClass = 'detail_value status-staff';
             } else if (heroData.status === 'staff_retired') {
                 statusClass = 'detail_value status-staff-retired';
             } else if (heroData.status === 'retired') {

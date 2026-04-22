@@ -20,6 +20,8 @@ class Hero(models.Model):
     age = models.IntegerField(verbose_name="Возраст", null=True, blank=True)
     height = models.IntegerField(verbose_name="Рост (см)", null=True, blank=True)
     superpower = models.CharField(max_length=200, verbose_name="Суперспособность", blank=True, null=True)
+    position_text = models.TextField(verbose_name="Должность", blank=True, null=True)
+
 
     BIRTH_PLACE_CHOICES = [
         ('city1', 'Вуменсфилд'),
@@ -29,7 +31,7 @@ class Hero(models.Model):
         ('city5', 'Ивклитор'),
         ('city6', 'Кант'),
         ('city7', 'Клеверленд'),
-        ('city8', 'Ксения'),
+        ('city8', 'Ксениа'),
         ('city9', 'Марина'),
         ('city10', 'Мидалтавн'),
         ('city11', 'Похфимар'),
@@ -45,6 +47,7 @@ class Hero(models.Model):
         ('city21', 'Фараон'),
         ('city22', 'Финн'),
         ('city23', 'Янго'),
+        ('city24', 'Батикант'),
     ]
     birth_place = models.CharField(max_length=50, choices=BIRTH_PLACE_CHOICES, verbose_name="Место рождения")
     phone = models.CharField(max_length=20, verbose_name="Номер телефона")
@@ -60,7 +63,8 @@ class Hero(models.Model):
     STATUS_CHOICES = [
         ('active', 'Действующий герой'),
         ('retired', 'В отставке'),
-        ('dispatch', 'Персонал'),
+        ('dispatch', 'Диспетчер'),
+        ('staff', 'Персонал'),
         ('staff_retired', 'Персонал в отставке'),
     ]
     status = models.CharField(
@@ -183,7 +187,7 @@ class Person(models.Model):
         ('city5', 'Ивклитор'),
         ('city6', 'Кант'),
         ('city7', 'Клеверленд'),
-        ('city8', 'Ксения'),
+        ('city8', 'Ксениа'),
         ('city9', 'Марина'),
         ('city10', 'Мидалтавн'),
         ('city11', 'Похфимар'),
@@ -199,6 +203,7 @@ class Person(models.Model):
         ('city21', 'Фараон'),
         ('city22', 'Финн'),
         ('city23', 'Янго'),
+        ('city24', 'Батикант'),
     ]
 
     # Основные поля

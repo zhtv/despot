@@ -155,6 +155,16 @@
                                     {% endif %}
                                 </div>
                             </div>
+                            <div class="hero_detail_row2" id="heroPositionRow" style="display:none;">
+                                <span class="detail_label">Должность:</span>
+                                <div id="heroPositionText" class="hero_convicted detail_value2">
+                                    {% if selected_hero.position_text %}
+                                        {{ selected_hero.position_text|linebreaks }}
+                                    {% else %}
+                                        [—]
+                                    {% endif %}
+                                </div>
+                            </div>
                             <div class="hero_detail_row2">
                                 <span id="biographyLabel" class="detail_label">
                                     {% if selected_hero and selected_hero.status in 'dispatch,staff_retired' %}
@@ -232,6 +242,27 @@
                 {% empty %}
                 <div class="no_dispatch">
                     <span class="mon font-125">Нет диспетчеров.</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="main_right_name font-2">
+                <a>Прочий персонал</a>
+            </div>
+
+            <div class="rightpanel_block">
+                {% for hero in staff_heroes %}
+                <div class="rightpanel_item hero-select-item {% if selected_hero and selected_hero.id == hero.id %}selected{% endif %}"
+                     data-hero-id="{{ hero.id }}">
+                    <div class="dispatch_info">
+                        <div class="dispatch_name mon font-125">
+                            {{ hero.first_name }} <b>«{{ hero.aka }}»</b> {{ hero.last_name }}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no_dispatch">
+                    <span class="mon font-125">Нет персонала.</span>
                 </div>
                 {% endfor %}
             </div>
